@@ -32,6 +32,24 @@ class ListArticlesTest extends TestCase
 
         $response = $this->getJson('/api/v1/articles/' . $article->getRouteKey());
 
-        $response->assert($article->title);
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'articles',
+                'id' => (string) $article->getRouteKey(),
+                'attribute' => [
+                    'title' => $article->title,
+                    'slug' => $article->slug,
+                    'content' => $article->content
+                ],
+                'links' => [
+                    'self' => route('api.v1.articles.show', $article)
+                ]
+            ]
+        ]);
+
+        /*
+        *  Verifica que el título del artículo está presente en la respuesta JSON recibida.
+        ** $response->assertSee($article->title);
+        */
     }
 }
