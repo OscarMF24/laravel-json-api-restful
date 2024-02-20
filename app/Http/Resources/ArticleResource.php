@@ -17,7 +17,7 @@ class ArticleResource extends JsonResource
         return [
             'type' => 'articles',
             'id' => (string) $this->resource->getRouteKey(),
-            'attribute' => [
+            'attributes' => [
                 'title' => $this->resource->title,
                 'slug' => $this->resource->slug,
                 'content' => $this->resource->content

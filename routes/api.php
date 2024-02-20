@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\ArticleController;
 |
 */
 
+Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
