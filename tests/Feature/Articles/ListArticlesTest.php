@@ -2,10 +2,9 @@
 
 namespace Tests\Feature\Articles;
 
+use Tests\TestCase;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 
 /**
  * Class ListArticlesTest
@@ -56,7 +55,7 @@ class ListArticlesTest extends TestCase
      * @test
      * @return void
      */
-    function can_fetch_all_articles(): void
+    public function can_fetch_all_articles(): void
     {
         $this->withoutExceptionHandling();
 
