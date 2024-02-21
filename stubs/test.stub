@@ -6,10 +6,24 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+/**
+ * Class {{ class }}
+ *
+ * @package {{ namespace }}
+ * @author Oscar Muñoz Franco Web developer
+ */
+
 class {{ class }} extends TestCase
 {
     use RefreshDatabase;
-    /** @test */
+
+    /**
+     * Test for creating {{ class }} test_example.
+     *
+     * @test
+     * @return void
+     */
+
     public function test_example(): void
     {
         //
