@@ -2,8 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -26,5 +29,25 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Format errors.
+     */
+    protected function invalidJson($request, ValidationException $exception)
+    {
+
+        $title = $exception->getMessage();
+
+        return new JsonResponse([
+            'errors' => collect($exception->errors())->map(fn ($message, $field) => [
+                'title' => $title,
+                'detail' => $message[0],
+                'source' => [
+                    'pointer' => '/' . str_replace('.', '/', $field)
+                ]
+
+            ])->values()
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
