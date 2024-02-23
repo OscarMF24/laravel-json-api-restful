@@ -4,7 +4,6 @@ namespace Tests\Feature\Articles;
 
 use Tests\TestCase;
 use App\Models\Article;
-use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -84,18 +83,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source' => ['pointer']]
-            ]
-        ])->assertJsonFragment([
-            'source' => ['pointer' => '/data/attributes/title']
-        ])->assertHeader(
-            'content-type',
-            'application/vnd.api+json'
-        )->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-
-        //$response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /**
@@ -105,7 +93,7 @@ class CreateArticleTest extends TestCase
      * @return void
      */
 
-    public function title_min(): void
+    public function title_must_be_at_least_4_characters(): void
     {
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
@@ -118,7 +106,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /**
@@ -140,7 +128,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.slug');
+        $response->assertJsonApiValidationErrors('slug');
     }
 
     /**
@@ -162,6 +150,6 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.content');
+        $response->assertJsonApiValidationErrors('content');
     }
 }
