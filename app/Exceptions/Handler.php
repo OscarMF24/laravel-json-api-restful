@@ -3,9 +3,8 @@
 namespace App\Exceptions;
 
 use Throwable;
-use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Http\Responses\JsonApiValidationErrorResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -34,21 +33,8 @@ class Handler extends ExceptionHandler
     /**
      * Format errors.
      */
-    protected function invalidJson($request, ValidationException $exception)
+    protected function invalidJson($request, ValidationException $exception): JsonApiValidationErrorResponse
     {
-        $title = $exception->getMessage();
-
-        return new JsonResponse([
-            'errors' => collect($exception->errors())->map(fn ($message, $field) => [
-                'title' => $title,
-                'detail' => $message[0],
-                'source' => [
-                    'pointer' => '/' . str_replace('.', '/', $field)
-                ]
-
-            ])->values()
-        ], Response::HTTP_UNPROCESSABLE_ENTITY, [
-            'content-type' => 'application/vnd.api+json'
-        ]);
+        return new JsonApiValidationErrorResponse($exception);
     }
 }
