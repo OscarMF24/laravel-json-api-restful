@@ -103,6 +103,64 @@ class CreateArticleTest extends TestCase
         ])->assertJsonApiValidationErrors('slug');
     }
 
+    /** @test */
+    public function slug_must_be_unique()
+    {
+        $article = Article::factory()->create();
+
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo Articulo',
+            'slug' => $article->slug,
+            'content' => 'Contenido del artículo'
+        ])->assertJsonApiValidationErrors('slug');
+    }
+
+    /** @test */
+    public function slug_must_only_contain_letters_numbers_and_dashes()
+    {
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo Articulo',
+            'slug' => '$%^&',
+            'content' => 'Contenido del artículo'
+        ])->assertJsonApiValidationErrors('slug');
+    }
+
+    /** @test */
+    public function slug_must_not_contain_underscores()
+    {
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo Articulo',
+            'slug' => 'with_underscores',
+            'content' => 'Contenido del artículo'
+        ])->assertSee(trans('validation.no_underscores', [
+            'attribute' => 'data.attributes.slug'
+        ]))->assertJsonApiValidationErrors('slug');
+    }
+
+    /** @test */
+    public function slug_must_not_start_with_dashes()
+    {
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo Articulo',
+            'slug' => '-starts-with-dashes',
+            'content' => 'Contenido del artículo'
+        ])->assertSee(trans('validation.no_starting_dashes', [
+            'attribute' => 'data.attributes.slug'
+        ]))->assertJsonApiValidationErrors('slug');
+    }
+
+    /** @test */
+    public function slug_must_not_end_with_dashes()
+    {
+        $this->postJson(route('api.v1.articles.store'), [
+            'title' => 'Nuevo Articulo',
+            'slug' => 'end-with-dashes-',
+            'content' => 'Contenido del artículo'
+        ])->assertSee(trans('validation.no_ending_dashes', [
+            'attribute' => 'data.attributes.slug'
+        ]))->assertJsonApiValidationErrors('slug');
+    }
+
     /**
      * Test for creating CreateArticleTest slug_is_required.
      *
