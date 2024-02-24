@@ -16,15 +16,27 @@ class ArticleController extends Controller
 {
     public function index(Request $request): ArticleCollection
     {
-        $sortField = $request->input('sort');
+        $articles = Article::query();
 
-        $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+        if ($request->filled('sort')) {
 
-        $sortField = ltrim($sortField, '-');
+            $sortFields = explode(',', $request->input('sort'));
 
-        $articles = Article::orderBy($sortField, $sortDirection)->get();
+            $allowedSorts = ['title', 'content'];
 
-        return ArticleCollection::make($articles);
+            foreach ($sortFields as $sortField) {
+
+                $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
+
+                $sortField = ltrim($sortField, '-');
+
+                abort_unless(in_array($sortField, $allowedSorts), 400);
+
+                $articles = $articles->orderBy($sortField, $sortDirection);
+            }
+        }
+
+        return ArticleCollection::make($articles->get());
     }
 
     public function show(Article $article): ArticleResource
