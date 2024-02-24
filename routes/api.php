@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ArticleController;
+use App\Http\Controllers\Api\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,7 @@ use App\Http\Controllers\Api\ArticleController;
 */
 
 Route::apiResource('articles', ArticleController::class)->names('articles');
+Route::apiResource('categories', CategoryController::class)->names('categories')->only('index', 'show');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
