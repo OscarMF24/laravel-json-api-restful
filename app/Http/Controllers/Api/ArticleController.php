@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Article;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ArticleResource;
@@ -14,28 +12,9 @@ use App\Http\Requests\SaveArticleRequest;
 
 class ArticleController extends Controller
 {
-    public function index(Request $request): ArticleCollection
+    public function index(): ArticleCollection
     {
-        $articles = Article::query();
-
-        if ($request->filled('sort')) {
-
-            $sortFields = explode(',', $request->input('sort'));
-
-            $allowedSorts = ['title', 'content'];
-
-            foreach ($sortFields as $sortField) {
-
-                $sortDirection = Str::of($sortField)->startsWith('-') ? 'desc' : 'asc';
-
-                $sortField = ltrim($sortField, '-');
-
-                abort_unless(in_array($sortField, $allowedSorts), 400);
-
-                $articles = $articles->orderBy($sortField, $sortDirection);
-            }
-        }
-
+        $articles = Article::allowedSorts(['title', 'content']);
         return ArticleCollection::make($articles->get());
     }
 
