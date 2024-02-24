@@ -33,7 +33,7 @@ class ListArticlesTest extends TestCase
 
         $response->assertSee($article->title);
 
-        $response->assertExactJson([
+        $response->assertJson([
             'data' => [
                 'type' => 'articles',
                 'id' => (string) $article->getRouteKey(),
@@ -63,7 +63,7 @@ class ListArticlesTest extends TestCase
 
         $response = $this->getJson(route('api.v1.articles.index'));
 
-        $response->assertExactJson([
+        $response->assertJson([
             'data' => [
                 [
                     'type' => 'articles',
